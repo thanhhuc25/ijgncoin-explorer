@@ -7,6 +7,6 @@ module.exports = {
 		host:"localhost",
 		port:10332,
 		username:"user",
-		password:"N6EFqGpk3kjNKAAG"
+		password:"password"
 	}
 };
