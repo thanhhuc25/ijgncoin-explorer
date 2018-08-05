@@ -13,7 +13,6 @@ This tool is intended to be a simple, self-hosted explorer for the Ijgncoin bloc
 * Search supports transactions, blocks, addresses (including bech32)
 * Mempool summary, with fee, size, and age breakdowns
 * RPC command browser and terminal
-* Currently supports BTC, LTC (support for any Ijgncoin-RPC-protocol-compliant coin can be added easily)
 
 # Getting started
 
