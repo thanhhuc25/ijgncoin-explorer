@@ -1,0 +1,97 @@
+extends layout
+
+block headContent
+	title Home
+	
+block content
+	h1(class="h3") #{coinConfig.siteTitle}
+	hr
+	div(class="card mb-3")
+		div(class="card-header")
+			h2(class="h6 mb-0") Network Summary
+		div(class="card-body")
+			table(class="table table-responsive-sm")
+				thead
+					tr
+						th Hashrate
+						if (getblockchaininfo.size_on_disk)
+							th Blockchain Size
+
+						th Difficulty
+						th Mempool Size
+
+				tbody(class="monospace")
+					tr
+						- var hashrateData = utils.formatLargeNumber(miningInfo.networkhashps, 3);
+						td
+							span #{hashrateData[0]} 
+							span(title=(hashrateData[1].name + "-hash / x10^" + hashrateData[1].exponent), data-toggle="tooltip") #{hashrateData[1].abbreviation}H/s
+						td #{utils.formatBytes(getblockchaininfo.size_on_disk)}
+							span(class="text-muted")  (pruned: #{getblockchaininfo.pruned})
+
+						td
+							- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulty, 3);
+							
+							span(title=parseFloat(getblockchaininfo.difficulty).toLocaleString(), data-toggle="tooltip")
+								span #{difficultyData[0]}
+								span  x 10
+								sup #{difficultyData[1].exponent}
+
+						td #{mempoolInfo.size.toLocaleString()} tx / 
+							- var mempoolBytesData = utils.formatLargeNumber(mempoolInfo.usage, 2);
+							span #{mempoolBytesData[0]} #{mempoolBytesData[1].abbreviation}B
+	
+	if (latestBlocks)
+		div(class="card mb-3")
+			div(class="card-header")
+				div(class="row")
+					div(class="col")
+						h2(class="h6 mb-0") Latest Blocks
+							if (getblockchaininfo.initialblockdownload)
+								small  (#{(getblockchaininfo.headers - getblockchaininfo.blocks).toLocaleString()} behind)
+
+					div(class="col")
+						span(style="float: right;")
+							a(href="/blocks") Browse Blocks &raquo;
+
+			div(class="card-body")
+
+				- var blocks = latestBlocks;
+				- var blockOffset = 0;
+
+				include includes/blocks-list.pug
+
+
+	if (chainTxStats)
+		div(class="card mb-3")
+			div(class="card-header")
+				div(class="row")
+					div(class="col")
+						h2(class="h6 mb-0") Transaction Stats
+
+					div(class="col")
+						span(style="float: right;")
+							a(href="/tx-stats") More Transaction Stats &raquo;
+		
+			div(class="card-body")
+				table(class="table table-responsive-sm text-right")
+					thead
+						tr
+							th
+							each item, index in chainTxStatsLabels
+								th #{item}
+					tbody
+						tr
+							th(class="text-left") Count
+							each item, index in chainTxStats
+								if item
+									td(class="monospace") #{item.window_tx_count.toLocaleString()}
+
+						tr
+							th(class="text-left") Rate
+							each item, index in chainTxStats
+								if item
+									td(class="monospace") #{new Decimal(item.txrate).toDecimalPlaces(4)}
+
+block endOfBody
+	script(async, defer, src="https://buttons.github.io/buttons.js")
